@@ -10,16 +10,28 @@ class Voice(IOAdapter):
     def __init__(self, **kwargs):
         super(Voice, self).__init__(**kwargs)
 
-        subprocess.call(["jack_control", "start"])
+        import platform
+
+        subprocess.call(['jack_control', 'start'])
 
         # Allow different speech recognition methods to be selected
         # See https://pypi.python.org/pypi/SpeechRecognition/
         self.recognizer_function = kwargs.get(
-            "recognizer_function", "recognize_sphinx"
+            'recognizer_function', 'recognize_sphinx'
         )
+
+        self.platform = platform.system().lower()        
 
     def speak(self, statement):
         import time
+
+        if self.platform == 'darwin':
+            # Use Mac's built-in say command to speak the response
+            cmd = ['say', str(statement.text)]
+            subprocess.call(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            return statement.text
+
         from espeak import espeak
         from espeak import core as espeak_core
 
@@ -50,9 +62,9 @@ class Voice(IOAdapter):
             result = recognizer_function(audio)
             return result
         except speech_recognition.UnknownValueError:
-            return Statement("I am sorry, I could not understand that.")
+            return Statement('I am sorry, I could not understand that.')
         except speech_recognition.RequestError as e:
-            m = "My speech recognition service has failed. {0}"
+            m = 'My speech recognition service has failed. {0}'
             return Statement(m.format(e))
 
     def process_response(self, statement):
