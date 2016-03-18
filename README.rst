@@ -17,6 +17,11 @@ Speech synthesis in this project is done using espeak.
 Note: For Mac users, the adapter will use Mac's built-in
 say command.
 
+Installation
+============
+
+pip install chatterbot-voice
+
 Examples
 ========
 

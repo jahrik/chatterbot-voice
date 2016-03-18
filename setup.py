@@ -13,10 +13,10 @@ requirements = req.readlines()
 req.close()
 
 setup(
-    name='chatterbot_voice',
+    name='chatterbot-voice',
     version=version,
     url='https://github.com/gunthercox/chatterbot_voice',
-    description='An open-source chat bot program written in Python.',
+    description='A voice interface adapter for ChatterBot.',
     author=author,
     author_email=author_email,
     packages=[
