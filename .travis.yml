@@ -1,0 +1,16 @@
+language: python
+
+python:
+  - '3.4'
+  - '2.7'
+  - pypy
+
+install:
+  - pip install coveralls
+  - pip install -r requirements.txt
+
+script:
+  - nosetests  --with-coverage --cover-package=chatterbot-voice
+
+after_success:
+  - coveralls
