@@ -11,8 +11,9 @@ class Voice(IOAdapter):
         super(Voice, self).__init__(**kwargs)
 
         import platform
+        import warnings
 
-        subprocess.call(['jack_control', 'start'])
+        self.platform = platform.system().lower()
 
         # Allow different speech recognition methods to be selected
         # See https://pypi.python.org/pypi/SpeechRecognition/
@@ -20,7 +21,13 @@ class Voice(IOAdapter):
             'recognizer_function', 'recognize_sphinx'
         )
 
-        self.platform = platform.system().lower()        
+        try:
+            subprocess.call(['jack_control', 'start'])
+        except Exception:
+            warnings.warn(
+                'Unable to start jack control.',
+                RuntimeWarning
+            )
 
     def speak(self, statement):
         import time
