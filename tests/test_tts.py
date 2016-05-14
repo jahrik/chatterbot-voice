@@ -3,7 +3,7 @@ from chatterbot.conversation import Statement
 from chatterbot_voice import Voice
 
 
-class MacOSXTTSTests(TestCase):
+class TextToSpeechTests(TestCase):
 
     def setUp(self):
         self.adapter = Voice()

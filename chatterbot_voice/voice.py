@@ -21,13 +21,8 @@ class Voice(IOAdapter):
             'recognizer_function', 'recognize_sphinx'
         )
 
-        try:
-            subprocess.call(['jack_control', 'start'])
-        except Exception:
-            warnings.warn(
-                'Unable to start jack control.',
-                RuntimeWarning
-            )
+        # Start jack control
+        self.attempt_jack_control_start()
 
     def speak(self, statement):
         import time
@@ -35,7 +30,10 @@ class Voice(IOAdapter):
         if self.platform == 'darwin':
             # Use Mac's built-in say command to speak the response
             cmd = ['say', str(statement.text)]
-            subprocess.call(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            subprocess.call(
+                cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
 
             return statement.text
 
@@ -77,3 +75,20 @@ class Voice(IOAdapter):
     def process_response(self, statement):
         self.speak(statement.text)
         return statement
+
+    def attempt_jack_control_start(self):
+        """
+        Jack is a program that can be used to get audio
+        input from your system. This command will try
+        to start it when your program runs.
+        """
+        try:
+            subprocess.call(['jack_control', 'start'])
+        except WindowsError:
+            # jack_control is not a valid command in Windows
+            pass
+        except Exception:
+            warnings.warn(
+                'Unable to start jack control.',
+                RuntimeWarning
+            )

@@ -26,8 +26,9 @@ pip install chatterbot-voice
 Examples
 --------
 
-See the examples directory in the GitHub repo.
+See the examples_ directory in the GitHub repo.
 
 
 .. _ChatterBot: https://github.com/gunthercox/ChatterBot
 .. _SpeechRecognition: https://github.com/Uberi/speech_recognition
+.. _examples: https://github.com/gunthercox/chatterbot-voice/tree/master/examples
