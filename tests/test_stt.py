@@ -1,12 +1,11 @@
 from unittest import TestCase
-from chatterbot.conversation import Statement
-from chatterbot_voice import Voice
+from chatterbot_voice import VoiceInput
 
 
 class SpeechToTextTests(TestCase):
 
     def setUp(self):
-        self.adapter = Voice()
+        self.adapter = VoiceInput()
 
     def test_attempt_jack_control_start(self):
         """
