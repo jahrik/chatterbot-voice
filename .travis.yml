@@ -5,7 +5,9 @@ python:
   - '2.7'
 
 before_install:
-  - sudo apt-get install -y espeak python-espeak python-dbus jackd2
+  - sudo apt-get install -y espeak python-espeak
+  - sudo apt-get install -y dbus python-dbus python-dbus-dev
+  - sudo apt-get install -y jackd2
 
 install:
   - pip install coveralls
