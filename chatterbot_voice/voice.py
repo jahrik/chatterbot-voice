@@ -1,19 +1,16 @@
-from chatterbot.adapters.io import IOAdapter
+from chatterbot.adapters.input import InputAdapter
+from chatterbot.adapters.output import OutputAdapter
 from chatterbot.conversation import Statement
-from multiprocessing import Queue
 import speech_recognition
 import subprocess
 
 
-class Voice(IOAdapter):
+class VoiceInput(InputAdapter):
 
     def __init__(self, **kwargs):
-        super(Voice, self).__init__(**kwargs)
+        super(VoiceInput, self).__init__(**kwargs)
 
-        import platform
         import warnings
-
-        self.platform = platform.system().lower()
 
         # Allow different speech recognition methods to be selected
         # See https://pypi.python.org/pypi/SpeechRecognition/
@@ -23,6 +20,50 @@ class Voice(IOAdapter):
 
         # Start jack control
         self.attempt_jack_control_start()
+
+    def process_input(self, statement):
+        recognizer = speech_recognition.Recognizer()
+        with speech_recognition.Microphone() as source:
+            recognizer.adjust_for_ambient_noise(source)
+            audio = recognizer.listen(source)
+
+        recognizer_function = getattr(recognizer, self.recognizer_function)
+
+        try:
+            result = recognizer_function(audio)
+            return Statement(result)
+        except speech_recognition.UnknownValueError:
+            return Statement('I am sorry, I could not understand that.')
+        except speech_recognition.RequestError as e:
+            m = 'My speech recognition service has failed. {0}'
+            return Statement(m.format(e))
+
+    def attempt_jack_control_start(self):
+        """
+        Jack is a program that can be used to get audio
+        input from your system. This command will try
+        to start it when your program runs.
+        """
+        try:
+            subprocess.call(['jack_control', 'start'])
+        except WindowsError:
+            # jack_control is not a valid command in Windows
+            pass
+        except Exception:
+            warnings.warn(
+                'Unable to start jack control.',
+                RuntimeWarning
+            )
+
+
+class VoiceOutput(OutputAdapter):
+
+    def __init__(self, **kwargs):
+        super(VoiceOutput, self).__init__(**kwargs)
+
+        import platform
+
+        self.platform = platform.system().lower()
 
     def speak(self, statement):
         import time
@@ -55,40 +96,6 @@ class Voice(IOAdapter):
 
         return call_result
 
-    def process_input(self):
-        recognizer = speech_recognition.Recognizer()
-        with speech_recognition.Microphone() as source:
-            recognizer.adjust_for_ambient_noise(source)
-            audio = recognizer.listen(source)
-
-        recognizer_function = getattr(recognizer, self.recognizer_function)
-
-        try:
-            result = recognizer_function(audio)
-            return result
-        except speech_recognition.UnknownValueError:
-            return Statement('I am sorry, I could not understand that.')
-        except speech_recognition.RequestError as e:
-            m = 'My speech recognition service has failed. {0}'
-            return Statement(m.format(e))
-
     def process_response(self, statement):
         self.speak(statement.text)
         return statement
-
-    def attempt_jack_control_start(self):
-        """
-        Jack is a program that can be used to get audio
-        input from your system. This command will try
-        to start it when your program runs.
-        """
-        try:
-            subprocess.call(['jack_control', 'start'])
-        except WindowsError:
-            # jack_control is not a valid command in Windows
-            pass
-        except Exception:
-            warnings.warn(
-                'Unable to start jack control.',
-                RuntimeWarning
-            )

@@ -3,20 +3,18 @@ from chatterbot import ChatBot
 
 bot = ChatBot(
     "Tiberius",
-    io_adapters=[
-        "chatterbot_voice.Voice"
-    ]
+    input_adapter="chatterbot_voice.VoiceInput",
+    output_adapter="chatterbot_voice.VoiceOutput",
 )
 
 # Train the chat bot with the entire english corpus
 bot.train("chatterbot.corpus.english")
 
-user_input = ""
-
 while True:
     try:
-        user_input = bot.get_input()
-        bot_input = bot.get_response(user_input)
+        # Use the parameter None because the VoiceInput adapter
+        # is getting data from audio input instead of a parameter
+        bot_input = bot.get_response(None)
 
     # Press ctrl-c or ctrl-d on the keyboard to exit
     except (KeyboardInterrupt, EOFError, SystemExit):

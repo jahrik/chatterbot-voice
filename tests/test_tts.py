@@ -1,12 +1,12 @@
 from unittest import TestCase
 from chatterbot.conversation import Statement
-from chatterbot_voice import Voice
+from chatterbot_voice import VoiceOutput
 
 
 class TextToSpeechTests(TestCase):
 
     def setUp(self):
-        self.adapter = Voice()
+        self.adapter = VoiceOutput()
 
     def test_response_returned(self):
         """
