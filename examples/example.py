@@ -1,4 +1,5 @@
 from chatterbot import ChatBot
+from chatterbot.training.trainers import ChatterBotCorpusTrainer
 
 
 bot = ChatBot(
@@ -6,6 +7,8 @@ bot = ChatBot(
     input_adapter="chatterbot_voice.VoiceInput",
     output_adapter="chatterbot_voice.VoiceOutput",
 )
+
+bot.set_trainer(ChatterBotCorpusTrainer)
 
 # Train the chat bot with the entire english corpus
 bot.train("chatterbot.corpus.english")
