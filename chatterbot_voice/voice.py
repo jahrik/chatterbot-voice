@@ -1,5 +1,5 @@
-from chatterbot.adapters.input import InputAdapter
-from chatterbot.adapters.output import OutputAdapter
+from chatterbot.input import InputAdapter
+from chatterbot.output import OutputAdapter
 from chatterbot.conversation import Statement
 import speech_recognition
 import subprocess
