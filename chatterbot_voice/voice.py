@@ -46,10 +46,8 @@ class VoiceInput(InputAdapter):
         """
         try:
             subprocess.call(['jack_control', 'start'])
-        except WindowsError:
-            # jack_control is not a valid command in Windows
-            pass
         except Exception:
+            # Note: jack_control is not a valid command in Windows
             warnings.warn(
                 'Unable to start jack control.',
                 RuntimeWarning
