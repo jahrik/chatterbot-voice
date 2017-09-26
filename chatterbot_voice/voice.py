@@ -19,7 +19,7 @@ class VoiceInput(InputAdapter):
         )
 
         # Start jack control
-        self.attempt_jack_control_start()
+        # self.attempt_jack_control_start()
 
     def process_input(self, statement):
         recognizer = speech_recognition.Recognizer()
@@ -85,6 +85,9 @@ class VoiceOutput(OutputAdapter):
             if event == espeak_core.event_MSG_TERMINATED:
                 done_synth[0] = True
 
+        espeak.list_voices
+        espeak.set_voice('de')
+        # espeak.speed = 1
         espeak.set_SynthCallback(synth_callback)
         call_result = espeak.synth(statement)
 
